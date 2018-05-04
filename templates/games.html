@@ -5,7 +5,7 @@
 {% block content %}
 
   <h2>Games</h2>
-  <table class="table">
+  <table class="table" id="game_table">
     <thead>
     <th>Name</th>
     <th>Description</th>
@@ -19,5 +19,57 @@
     {% endfor %}
     </tbody>
   </table>
+<br>
+  <h2>Got a Game to Bring? Add It to the List!</h2>
+  <form action='/add_game' method="POST">
+    <div class="form-group">
+      <!-- <label for="gameName">Name of Game</label> -->
+      <h4>Name of Game</h4>
+      <input type="name" class="form-control" id="gameName" maxlength="20">
+    </div>
+    <div class="form-group">
+      <!-- <label for="gameDesc">Description of Game</label> -->
+      <h4>Decription of Game</h4>
+      <textarea class="form-control" id="gameDesc" rows="2" maxlength="100"></textarea>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-10">
+        <button type="submit" class="btn btn-primary" id="addGame">Add It!</button>
+      </div>
+    </div>
+  </form>
+
+  <script type="text/javascript">
+    function refreshGameTable(results) {
+      let allGamesList = results;
+      document.querySelector("#game_table").innerHTML = "
+        <thead>
+          <th>Name</th>
+            <th>Description</th>
+        </thead>
+        <tbody>
+          {% for game in allGamesList %}
+            <tr>
+              <td>{{ game.name }}</td>
+              <td>{{ game.description }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>";
+    }
+
+    function updateGames(evt) {
+      evt.preventDefault();
+
+      let newGameInfo = {
+        "gameName": document.querySelector('#gameName').value,
+        "gameDesc": document.querySelector('#gameDesc').value
+      };
+
+      console.log(newGameInfo);
+      $.post("/add_game", newGameInfo, refreshGameTable);
+    }
+
+    document.querySelector('#addGame').addEventListener('click', updateGames);
+  </script>
 
 {% endblock %}
