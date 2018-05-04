@@ -39,12 +39,12 @@ class PartyTestsDatabase(unittest.TestCase):
     def setUp(self):
         """Stuff to do before every test."""
 
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+
         with self.client as c:
             with c.session_transaction() as sess:
                 sess['RSVP'] = True
-
-        self.client = app.test_client()
-        app.config['TESTING'] = True
 
         # Connect to test database (uncomment when testing database)
         connect_to_db(app, "postgresql:///testdb")
